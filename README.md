@@ -27,7 +27,6 @@ Pode-se selecionar a instalação das extensões:
 - Mcrypt        - PHP_FPM_INSTALL_MCRYPT
 - Zip           - PHP_FPM_INSTALL_COMPRESSION
 - GD            - PHP_FPM_INSTALL_GD
-- Mbstring      - PHP_FPM_INSTALL_MBSTRING
 - Mysql(i)      - PHP_FPM_INSTALL_PDO_MYSQL
 - Postgresql    - PHP_FPM_INSTALL_PDO_POSTGRESQL
 - BcMath        - PHP_FPM_INSTALL_BCMATH
@@ -38,3 +37,6 @@ Pode-se selecionar a instalação das extensões:
 - Json/xml      - PHP_FPM_INSTALL_JSON_XML
 - Intl          - PHP_FPM_INSTALL_INTL
 - Node/npm      - PHP_FPM_INSTALL_NODE
+
+
+### MySQL

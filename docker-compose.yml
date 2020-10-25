@@ -24,22 +24,20 @@ services:
         build: 
             context: ./docker/php-fpm
             args:
-                INSTALL_MCRYPT=${PHP_FPM_INSTALL_MCRYPT}
-                INSTALL_COMPRESSION=${PHP_FPM_INSTALL_COMPRESSION}
-                INSTALL_GD=${PHP_FPM_INSTALL_GD}
-                INSTALL_GD=${PHP_FPM_INSTALL_GD}
-                INSTALL_PDO_MYSQL=${PHP_FPM_INSTALL_PDO_MYSQL}
-                INSTALL_PDO_POSTGRESQL=${PHP_FPM_INSTALL_PDO_POSTGRESQL}
-                INSTALL_BCMATH=${PHP_FPM_INSTALL_BCMATH}
-                INSTALL_OPCACHE=${PHP_FPM_INSTALL_OPCACHE}
-                INSTALL_XDEBUG=${PHP_FPM_INSTALL_XDEBUG}
-                INSTALL_COMPOSER=${PHP_FPM_INSTALL_COMPOSER}
-                INSTALL_TOKENIZER=${PHP_FPM_INSTALL_TOKENIZER}
-                INSTALL_JSON_XML=${PHP_FPM_INSTALL_JSON_XML}
-                INSTALL_INTL=${PHP_FPM_INSTALL_INTL}
-                INSTALL_NODE=${PHP_FPM_INSTALL_NODE}
+                - INSTALL_COMPRESSION=${PHP_FPM_INSTALL_COMPRESSION}
+                - INSTALL_GD=${PHP_FPM_INSTALL_GD}
+                - INSTALL_PDO_MYSQL=${PHP_FPM_INSTALL_PDO_MYSQL}
+                - INSTALL_PDO_POSTGRESQL=${PHP_FPM_INSTALL_PDO_POSTGRESQL}
+                - INSTALL_BCMATH=${PHP_FPM_INSTALL_BCMATH}
+                - INSTALL_OPCACHE=${PHP_FPM_INSTALL_OPCACHE}
+                - INSTALL_XDEBUG=${PHP_FPM_INSTALL_XDEBUG}
+                - INSTALL_COMPOSER=${PHP_FPM_INSTALL_COMPOSER}
+                - INSTALL_TOKENIZER=${PHP_FPM_INSTALL_TOKENIZER}
+                - INSTALL_JSON_XML=${PHP_FPM_INSTALL_JSON_XML}
+                - INSTALL_INTL=${PHP_FPM_INSTALL_INTL}
+                - INSTALL_NODE=${PHP_FPM_INSTALL_NODE}
         
-        expose: 
+        ports: 
             - "9000:9000"
         volumes:
             - ${APPLICATION}:/var/www/html:cached
@@ -53,9 +51,9 @@ services:
             context: ./docker/mysql
         ports: 
             - "${MYSQL_PORT}:3306"
-            volumes:
-            - ${MYSQL_DATA}:/var/lib/mysql
-        enviroments:
+        volumes:
+        - ${MYSQL_DATA}:/var/lib/mysql
+        environment:
             - MYSQL_DATABASE=${MYSQL_DATABASE}
             - MYSQL_USER=${MYSQL_USER}
             - MYSQL_PASSWORD=${MYSQL_PASSWORD}

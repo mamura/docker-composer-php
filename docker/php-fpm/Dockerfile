@@ -14,13 +14,6 @@ RUN apk add libpq zlib openssl-dev curl-dev \
 && docker-php-ext-install pdo \
 && docker-php-ext-install curl
 
-# Mcrypt
-ARG INSTALL_MCRYPT=false
-RUN if [ ${INSTALL_MCRYPT} = true ]; then \
-    apk add libmcrypt-dev \
-    && docker-php-ext-install mcrypt \
-;fi
-
 # Compression
 ARG INSTALL_COMPRESSION=false
 RUN if [ ${INSTALL_COMPRESSION} = true ]; then \
@@ -38,13 +31,7 @@ RUN if [ ${INSTALL_GD} = true ]; then \
     --with-jpeg \
     && NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
     && docker-php-ext-install -j${NPROC} gd \
-    && apk del --no-cache freetype-dev libpng-dev libjpeg-turbo-dev
-;fi
-
-# Mbstring
-ARG INSTALL_MBSTRING=false
-RUN if [ ${INSTALL_MBSTRING} = true ]; then \
-    docker-php-ext-install mbstring \
+    && apk del --no-cache freetype-dev libpng-dev libjpeg-turbo-dev \
 ;fi    
 
 # PDO Mysql
@@ -52,7 +39,7 @@ ARG INSTALL_PDO_MYSQL=false
 RUN if [ ${INSTALL_MYSQL} = true ]; then \
     apk add mariadb-client \
     && docker-php-ext-install pdo_mysql \
-    && docker-php-ext-install mysqli
+    && docker-php-ext-install mysqli \
 ;fi
 
 # PDO PostgreSql
@@ -77,10 +64,12 @@ COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 # Xdebug
 ARG INSTALL_XDEBUG=false
 RUN if [ ${INSTALL_XDEBUG} = true ]; then \
-    pecl install xdebug \
-    docker-php-ext-enable xbedug \
+    apk add --no-cache --update --virtual buildDeps autoconf $PHPIZE_DEPS \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && apk del buildDeps \
 ;fi
-COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+#COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # Composer
 ARG INSTALL_COMPOSER
@@ -102,7 +91,7 @@ RUN if [ ${INSTALL_JSON} = true ]; then \
     xml \
     dom \
     xmlrpc \
-    xsl
+    xsl \
 ;fi
 
 # intl
@@ -110,7 +99,7 @@ ARG INSTALL_INTL=false
 RUN if [ ${INSTALL_JSON} = true ]; then \
     apk add zlib-dev icu-dev g++ \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install intl
+    && docker-php-ext-install intl \
 ;fi
 
 # node
