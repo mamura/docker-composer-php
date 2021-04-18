@@ -1,58 +1,59 @@
 version: '3'
-
 services:
-    nginx:
-        container_name: nginx-${APP_NAME}
-        labels:
-            - traefik.enable=true
-            - traefik.http.routers.${APP_NAME}.entrypoints=http
-            - traefik.http.routers.${APP_NAME}.rule=Host(`${APP_NAME}.test`)
-        restart: always
-        build:
-            context: ./docker/nginx
-        volumes:
-            - ${APPLICATION}:/var/www/html
-            - ${NGINX_LOG_PATH}:/var/log/nginx
-            - ${NGINX_CONF_PATH}:/etc/nginx/conf.d
-        networks:
-            - internal
+  nginx:
+    container_name: 'nginx-${APP_NAME}'
+    labels:
+      - traefik.enable=true
+      - 'traefik.http.routers.${APP_NAME}.entrypoints=http'
+      - 'traefik.http.routers.${APP_NAME}.rule=Host(`${APP_NAME}.test`)'
+    restart: always
+    build:
+      context: ./docker/nginx
+      args:
+        - APP_NAME=${APP_NAME}
+    volumes:
+      - '${APPLICATION}:/var/www/html'
+      - '${NGINX_LOG_PATH}:/var/log/nginx'
+    networks:
+      - default
 
-    php-fpm:
-        container_name: php-${APP_NAME}
-        restart: always
-        build: 
-            context: ./docker/php-fpm/${PHP_VERSION}
-        ports: 
-            - "9000:9000"
-        volumes:
-            - ${APPLICATION}:/var/www/html
-        networks:
-            - internal
+  php-fpm:
+    container_name: 'php-${APP_NAME}'
+    restart: always
+    build:
+      context: './docker/php-fpm/${PHP_VERSION}'
+    ports:
+      - '9000:9000'
+    volumes:
+      - '${APPLICATION}:/var/www/html'
+    networks:
+      - default
 
-    mysql:
-        container_name: mysql-${APP_NAME}
-        restart: always
-        image: mysql
-        ports: 
-            - "${MYSQL_PORT}:3306"
-        volumes:
-        - ${MYSQL_DATA}:/var/lib/mysql
-        environment:
-            - MYSQL_DATABASE=${MYSQL_DATABASE}
-            - MYSQL_USER=${MYSQL_USER}
-            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        networks:
-            - internal
+  mysql:
+    container_name: 'mysql-${APP_NAME}'
+    restart: always
+    image: mysql
+    ports:
+      - '${MYSQL_PORT}:3306'
+    volumes:
+      - '${MYSQL_DATA}:/var/lib/mysql'
+    environment:
+      - 'MYSQL_DATABASE=${MYSQL_DATABASE}'
+      - 'MYSQL_USER=${MYSQL_USER}'
+      - 'MYSQL_PASSWORD=${MYSQL_PASSWORD}'
+      - 'MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}'
+    networks:
+      - default
 
-    redis:
-        container_name: redis-${APP_NAME}
-        image: sickp/alpine-redis:3.2.2
-        ports:
-            - ${REDIS_PORT}:6379
-        networks:
-            - internal
-
+  redis:
+    container_name: 'redis-${APP_NAME}'
+    image: 'sickp/alpine-redis:3.2.2'
+    ports:
+      - '${REDIS_PORT}:6379'
+    networks:
+      - default
+      
 networks:
-    internal:
-        driver: bridge
+  default:
+    external:
+      name: dev-network
